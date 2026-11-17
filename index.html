@@ -1,1 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My To-Do List</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
+    body {
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0969da;
+    }
+
+    button.add-btn {
+      background-color: #2da44e;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button.add-btn:hover {
+      background-color: #2c974b;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      gap: 10px;
+    }
+
+    li.completed span {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    .task-text {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      background-color: #cf222e;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .delete-btn:hover {
+      background-color: #a40e26;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>My To-Do List 📝</h1>
+    
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="Tambah tugas baru...">
+      <button class="add-btn" onclick="addTask()">Tambah</button>
+    </div>
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+
+    // Muat data dari localStorage saat halaman dibuka
+    document.addEventListener('DOMContentLoaded', loadTasks);
+
+    function addTask() {
+      const text = taskInput.value.trim();
+      if (!text) return;
+
+      const task = { id: Date.now(), text: text, completed: false };
+      saveTaskToStorage(task);
+      renderTask(task);
+      taskInput.value = '';
+    }
+
+    function renderTask(task) {
+      const li = document.createElement('li');
+      li.dataset.id = task.id;
+      if (task.completed) li.classList.add('completed');
+
+      li.innerHTML = `
+        <span class="task-text" onclick="toggleTask(${task.id})">${escapeHtml(task.text)}</span>
+        <button class="delete-btn" onclick="deleteTask(${task.id})">Hapus</button>
+      `;
+      taskList.appendChild(li);
+    }
+
+    function toggleTask(id) {
+      let tasks = getTasksFromStorage();
+      tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+      localStorage.setItem('my_tasks', JSON.stringify(tasks));
+
+      const li = taskList.querySelector(`[data-id="${id}"]`);
+      if (li) li.classList.toggle('completed');
+    }
+
+    function deleteTask(id) {
+      let tasks = getTasksFromStorage();
+      tasks = tasks.filter(t => t.id !== id);
+      localStorage.setItem('my_tasks', JSON.stringify(tasks));
+
+      const li = taskList.querySelector(`[data-id="${id}"]`);
+      if (li) li.remove();
+    }
+
+    function saveTaskToStorage(task) {
+      const tasks = getTasksFromStorage();
+      tasks.push(task);
+      localStorage.setItem('my_tasks', JSON.stringify(tasks));
+    }
+
+    function getTasksFromStorage() {
+      return JSON.parse(localStorage.getItem('my_tasks')) || [];
+    }
+
+    function loadTasks() {
+      const tasks = getTasksFromStorage();
+      tasks.forEach(renderTask);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
+
+    // Tekan Enter untuk menambah tugas
+    taskInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') addTask();
+    });
+  </script>
+</body>
+</html>
