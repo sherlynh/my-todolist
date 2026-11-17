@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro-Task Manager 🚀</title>
+  <title>Pro-Task Manager with Deadline 🚀</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -15,12 +15,8 @@
       --primary: #6366f1;
       --primary-hover: #4f46e5;
       --danger: #ef4444;
-      --danger-hover: #dc2626;
       --success: #22c55e;
-      --badge-high-bg: #fee2e2;
-      --badge-high-text: #991b1b;
-      --badge-normal-bg: #e0f2fe;
-      --badge-normal-text: #0369a1;
+      --warning: #f59e0b;
     }
 
     * {
@@ -42,10 +38,10 @@
     .container {
       background-color: var(--card-bg);
       width: 100%;
-      max-width: 580px;
+      max-width: 620px;
       padding: 32px;
       border-radius: 20px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
       height: fit-content;
     }
 
@@ -53,13 +49,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     h1 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--text-main);
     }
 
     .badge-pro {
@@ -73,7 +68,7 @@
 
     /* Progress Bar */
     .progress-container {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       background: var(--border-color);
       border-radius: 10px;
       height: 10px;
@@ -90,17 +85,20 @@
     .progress-text {
       font-size: 0.85rem;
       color: var(--text-sub);
-      margin-top: 6px;
+      margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
     }
 
-    /* Input Form */
+    /* Form Input */
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 20px;
+      background: #f1f5f9;
+      padding: 16px;
+      border-radius: 14px;
     }
 
     .input-row {
@@ -108,23 +106,21 @@
       gap: 8px;
     }
 
-    input[type="text"] {
-      flex: 1;
-      padding: 12px 16px;
+    input[type="text"], input[type="datetime-local"] {
+      padding: 10px 14px;
       border: 1px solid var(--border-color);
       border-radius: 10px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
-      transition: all 0.2s;
+      background: white;
     }
 
-    input[type="text"]:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    input[type="text"] {
+      flex: 1;
     }
 
     select {
-      padding: 10px 14px;
+      padding: 10px;
       border: 1px solid var(--border-color);
       border-radius: 10px;
       font-size: 0.9rem;
@@ -137,7 +133,7 @@
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 0 20px;
+      padding: 0 18px;
       border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
@@ -148,7 +144,7 @@
       background-color: var(--primary-hover);
     }
 
-    /* Search & Filter */
+    /* Search & Filters */
     .search-filter {
       display: flex;
       flex-direction: column;
@@ -160,7 +156,6 @@
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: 4px;
     }
 
     .filter-btn {
@@ -173,7 +168,6 @@
       color: var(--text-sub);
       font-weight: 500;
       white-space: nowrap;
-      transition: all 0.2s;
     }
 
     .filter-btn.active {
@@ -185,26 +179,21 @@
     /* Task List */
     ul {
       list-style: none;
-      max-height: 350px;
+      max-height: 380px;
       overflow-y: auto;
-      padding-right: 4px;
     }
 
     li {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       padding: 14px;
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: 12px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       gap: 12px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    li:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
     li.completed .task-text {
@@ -214,16 +203,16 @@
 
     .task-left {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
       flex: 1;
       cursor: pointer;
-      overflow: hidden;
     }
 
     input[type="checkbox"] {
       width: 18px;
       height: 18px;
+      margin-top: 3px;
       cursor: pointer;
       accent-color: var(--primary);
     }
@@ -231,34 +220,37 @@
     .task-info {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      overflow: hidden;
+      gap: 5px;
+      flex: 1;
     }
 
     .task-text {
       font-size: 0.95rem;
+      font-weight: 500;
       color: var(--text-main);
       word-break: break-word;
-      font-weight: 500;
     }
 
-    .priority-badge {
-      font-size: 0.7rem;
+    .task-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.75rem;
+      align-items: center;
+    }
+
+    .badge {
       padding: 2px 8px;
       border-radius: 6px;
-      width: fit-content;
       font-weight: 600;
     }
 
-    .priority-tinggi {
-      background-color: var(--badge-high-bg);
-      color: var(--badge-high-text);
-    }
-
-    .priority-normal {
-      background-color: var(--badge-normal-bg);
-      color: var(--badge-normal-text);
-    }
+    .badge-priority-tinggi { background-color: #fee2e2; color: #991b1b; }
+    .badge-priority-normal { background-color: #e0f2fe; color: #0369a1; }
+    
+    .badge-deadline { background-color: #f1f5f9; color: #475569; }
+    .badge-overdue { background-color: #fee2e2; color: #dc2626; font-weight: 700; }
+    .badge-due-soon { background-color: #fef3c7; color: #d97706; font-weight: 700; }
 
     .delete-btn {
       background: none;
@@ -266,9 +258,8 @@
       color: var(--text-sub);
       cursor: pointer;
       font-size: 0.9rem;
-      padding: 6px;
-      border-radius: 8px;
-      transition: all 0.2s;
+      padding: 4px 8px;
+      border-radius: 6px;
     }
 
     .delete-btn:hover {
@@ -288,11 +279,11 @@
 
   <div class="container">
     <header>
-      <h1>Task Manager 🚀</h1>
-      <div class="badge-pro">PRO VERSION</div>
+      <h1>Task Manager + Deadline ⏰</h1>
+      <div class="badge-pro">ULTIMATE</div>
     </header>
 
-    <!-- Progress Bar Section -->
+    <!-- Progress Bar -->
     <div class="progress-container">
       <div class="progress-bar" id="progressBar"></div>
     </div>
@@ -301,9 +292,7 @@
       <span id="progressPercent">0%</span>
     </div>
 
-    <hr style="border: none; border-top: 1px solid var(--border-color); margin: 20px 0;">
-
-    <!-- Form Input -->
+    <!-- Form Input dengan Deadline -->
     <div class="form-group">
       <div class="input-row">
         <input type="text" id="taskInput" placeholder="Tulis tugas baru...">
@@ -311,11 +300,14 @@
           <option value="normal">Normal</option>
           <option value="tinggi">Penting 🔥</option>
         </select>
-        <button class="add-btn" onclick="addTask()">Tambah</button>
+      </div>
+      <div class="input-row">
+        <input type="datetime-local" id="deadlineInput" style="flex: 1;">
+        <button class="add-btn" onclick="addTask()">Tambah Tugas</button>
       </div>
     </div>
 
-    <!-- Search & Filters -->
+    <!-- Search & Filter -->
     <div class="search-filter">
       <input type="text" id="searchInput" placeholder="🔍 Cari tugas..." oninput="renderTasks()">
       <div class="filters">
@@ -330,12 +322,13 @@
   </div>
 
   <script>
-    let tasks = JSON.parse(localStorage.getItem('pro_tasks')) || [];
+    let tasks = JSON.parse(localStorage.getItem('ultimate_tasks')) || [];
     let currentFilter = 'all';
 
     const taskInput = document.getElementById('taskInput');
-    const searchInput = document.getElementById('searchInput');
+    const deadlineInput = document.getElementById('deadlineInput');
     const prioritySelect = document.getElementById('prioritySelect');
+    const searchInput = document.getElementById('searchInput');
     const taskList = document.getElementById('taskList');
     const progressBar = document.getElementById('progressBar');
     const progressLabel = document.getElementById('progressLabel');
@@ -351,12 +344,16 @@
         id: Date.now(),
         text: text,
         priority: prioritySelect.value,
+        deadline: deadlineInput.value || '',
         completed: false
       };
 
-      tasks.unshift(newTask); // Tambah di urutan paling atas
+      tasks.unshift(newTask);
       saveAndRender();
+      
+      // Reset input
       taskInput.value = '';
+      deadlineInput.value = '';
     }
 
     function toggleTask(id) {
@@ -387,8 +384,32 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('pro_tasks', JSON.stringify(tasks));
+      localStorage.setItem('ultimate_tasks', JSON.stringify(tasks));
       renderTasks();
+    }
+
+    function formatDateTime(datetimeStr) {
+      if (!datetimeStr) return '';
+      const date = new Date(datetimeStr);
+      return date.toLocaleDateString('id-ID', { 
+        day: 'numeric', month: 'short', year: 'numeric', 
+        hour: '2-digit', minute: '2-digit' 
+      });
+    }
+
+    function getDeadlineStatus(datetimeStr) {
+      if (!datetimeStr) return { class: '', text: '' };
+      
+      const now = new Date();
+      const deadlineDate = new Date(datetimeStr);
+      const diffHours = (deadlineDate - now) / (1000 * 60 * 60);
+
+      if (diffHours < 0 && !this.completed) {
+        return { class: 'badge-overdue', text: '⚠️ Terlambat!' };
+      } else if (diffHours <= 24 && diffHours >= 0) {
+        return { class: 'badge-due-soon', text: '⏰ Deadline Segera!' };
+      }
+      return { class: 'badge-deadline', text: `📅 ${formatDateTime(datetimeStr)}` };
     }
 
     function renderTasks() {
@@ -403,7 +424,7 @@
       });
 
       if (filteredTasks.length === 0) {
-        taskList.innerHTML = `<li class="empty-state">Tidak ada tugas yang ditemukan 📭</li>`;
+        taskList.innerHTML = `<li class="empty-state">Tidak ada tugas ditemukan 📭</li>`;
         updateProgress();
         return;
       }
@@ -412,15 +433,34 @@
         const li = document.createElement('li');
         if (task.completed) li.classList.add('completed');
 
-        const priorityClass = task.priority === 'tinggi' ? 'priority-tinggi' : 'priority-normal';
+        const priorityClass = task.priority === 'tinggi' ? 'badge-priority-tinggi' : 'badge-priority-normal';
         const priorityLabel = task.priority === 'tinggi' ? 'Penting' : 'Normal';
+
+        // Hitung status deadline
+        let deadlineHtml = '';
+        if (task.deadline) {
+          const now = new Date();
+          const dDate = new Date(task.deadline);
+          const diffHours = (dDate - now) / (1000 * 60 * 60);
+
+          if (diffHours < 0 && !task.completed) {
+            deadlineHtml = `<span class="badge badge-overdue">⚠️ Terlambat (${formatDateTime(task.deadline)})</span>`;
+          } else if (diffHours <= 24 && diffHours >= 0 && !task.completed) {
+            deadlineHtml = `<span class="badge badge-due-soon">⏰ Besok/Hari Ini (${formatDateTime(task.deadline)})</span>`;
+          } else {
+            deadlineHtml = `<span class="badge badge-deadline">📅 ${formatDateTime(task.deadline)}</span>`;
+          }
+        }
 
         li.innerHTML = `
           <div class="task-left" onclick="toggleTask(${task.id})">
             <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${task.id})">
             <div class="task-info">
               <span class="task-text">${escapeHtml(task.text)}</span>
-              <span class="priority-badge ${priorityClass}">${priorityLabel}</span>
+              <div class="task-meta">
+                <span class="badge ${priorityClass}">${priorityLabel}</span>
+                ${deadlineHtml}
+              </div>
             </div>
           </div>
           <button class="delete-btn" onclick="deleteTask(${task.id})" title="Hapus">🗑️</button>
