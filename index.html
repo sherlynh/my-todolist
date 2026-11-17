@@ -3,182 +3,432 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My To-Do List</title>
+  <title>Pro-Task Manager 🚀</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+      --border-color: #e2e8f0;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --success: #22c55e;
+      --badge-high-bg: #fee2e2;
+      --badge-high-text: #991b1b;
+      --badge-normal-bg: #e0f2fe;
+      --badge-normal-text: #0369a1;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
     body {
-      background-color: #f4f6f9;
+      background-color: var(--bg-color);
+      color: var(--text-main);
       display: flex;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 40px 16px;
+      min-height: 100vh;
     }
 
     .container {
-      background-color: #ffffff;
+      background-color: var(--card-bg);
       width: 100%;
-      max-width: 480px;
-      padding: 24px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      max-width: 580px;
+      padding: 32px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
     }
 
     h1 {
       font-size: 1.5rem;
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
-    .input-group {
+    .badge-pro {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin-bottom: 24px;
+      background: var(--border-color);
+      border-radius: 10px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, #6366f1, #22c55e);
+      height: 100%;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .progress-text {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Input Form */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
     }
 
     input[type="text"] {
       flex: 1;
-      padding: 10px 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
       font-size: 0.95rem;
       outline: none;
+      transition: all 0.2s;
     }
 
     input[type="text"]:focus {
-      border-color: #0969da;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    select {
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      background: white;
+      cursor: pointer;
     }
 
     button.add-btn {
-      background-color: #2da44e;
+      background-color: var(--primary);
       color: white;
       border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
+      padding: 0 20px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
+      transition: background-color 0.2s;
     }
 
     button.add-btn:hover {
-      background-color: #2c974b;
+      background-color: var(--primary-hover);
     }
 
+    /* Search & Filter */
+    .search-filter {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-btn {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--text-sub);
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Task List */
     ul {
       list-style: none;
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     li {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      gap: 10px;
+      padding: 14px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    li.completed span {
+    li:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    li.completed .task-text {
       text-decoration: line-through;
-      color: #888;
+      color: var(--text-sub);
+    }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .task-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow: hidden;
     }
 
     .task-text {
-      flex: 1;
-      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      word-break: break-word;
+      font-weight: 500;
+    }
+
+    .priority-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      width: fit-content;
+      font-weight: 600;
+    }
+
+    .priority-tinggi {
+      background-color: var(--badge-high-bg);
+      color: var(--badge-high-text);
+    }
+
+    .priority-normal {
+      background-color: var(--badge-normal-bg);
+      color: var(--badge-normal-text);
     }
 
     .delete-btn {
-      background-color: #cf222e;
-      color: white;
+      background: none;
       border: none;
-      padding: 4px 8px;
-      border-radius: 4px;
+      color: var(--text-sub);
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      padding: 6px;
+      border-radius: 8px;
+      transition: all 0.2s;
     }
 
     .delete-btn:hover {
-      background-color: #a40e26;
+      background-color: #fee2e2;
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-sub);
+      padding: 30px 0;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>My To-Do List 📝</h1>
-    
-    <div class="input-group">
-      <input type="text" id="taskInput" placeholder="Tambah tugas baru...">
-      <button class="add-btn" onclick="addTask()">Tambah</button>
+    <header>
+      <h1>Task Manager 🚀</h1>
+      <div class="badge-pro">PRO VERSION</div>
+    </header>
+
+    <!-- Progress Bar Section -->
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-text">
+      <span id="progressLabel">0 dari 0 tugas selesai</span>
+      <span id="progressPercent">0%</span>
     </div>
 
+    <hr style="border: none; border-top: 1px solid var(--border-color); margin: 20px 0;">
+
+    <!-- Form Input -->
+    <div class="form-group">
+      <div class="input-row">
+        <input type="text" id="taskInput" placeholder="Tulis tugas baru...">
+        <select id="prioritySelect">
+          <option value="normal">Normal</option>
+          <option value="tinggi">Penting 🔥</option>
+        </select>
+        <button class="add-btn" onclick="addTask()">Tambah</button>
+      </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="search-filter">
+      <input type="text" id="searchInput" placeholder="🔍 Cari tugas..." oninput="renderTasks()">
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('all', this)">Semua</button>
+        <button class="filter-btn" onclick="setFilter('active', this)">Belum Selesai</button>
+        <button class="filter-btn" onclick="setFilter('completed', this)">Selesai</button>
+      </div>
+    </div>
+
+    <!-- List Tugas -->
     <ul id="taskList"></ul>
   </div>
 
   <script>
-    const taskInput = document.getElementById('taskInput');
-    const taskList = document.getElementById('taskList');
+    let tasks = JSON.parse(localStorage.getItem('pro_tasks')) || [];
+    let currentFilter = 'all';
 
-    // Muat data dari localStorage saat halaman dibuka
-    document.addEventListener('DOMContentLoaded', loadTasks);
+    const taskInput = document.getElementById('taskInput');
+    const searchInput = document.getElementById('searchInput');
+    const prioritySelect = document.getElementById('prioritySelect');
+    const taskList = document.getElementById('taskList');
+    const progressBar = document.getElementById('progressBar');
+    const progressLabel = document.getElementById('progressLabel');
+    const progressPercent = document.getElementById('progressPercent');
+
+    document.addEventListener('DOMContentLoaded', renderTasks);
 
     function addTask() {
       const text = taskInput.value.trim();
       if (!text) return;
 
-      const task = { id: Date.now(), text: text, completed: false };
-      saveTaskToStorage(task);
-      renderTask(task);
+      const newTask = {
+        id: Date.now(),
+        text: text,
+        priority: prioritySelect.value,
+        completed: false
+      };
+
+      tasks.unshift(newTask); // Tambah di urutan paling atas
+      saveAndRender();
       taskInput.value = '';
     }
 
-    function renderTask(task) {
-      const li = document.createElement('li');
-      li.dataset.id = task.id;
-      if (task.completed) li.classList.add('completed');
-
-      li.innerHTML = `
-        <span class="task-text" onclick="toggleTask(${task.id})">${escapeHtml(task.text)}</span>
-        <button class="delete-btn" onclick="deleteTask(${task.id})">Hapus</button>
-      `;
-      taskList.appendChild(li);
-    }
-
     function toggleTask(id) {
-      let tasks = getTasksFromStorage();
       tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
-      localStorage.setItem('my_tasks', JSON.stringify(tasks));
-
-      const li = taskList.querySelector(`[data-id="${id}"]`);
-      if (li) li.classList.toggle('completed');
+      saveAndRender();
     }
 
     function deleteTask(id) {
-      let tasks = getTasksFromStorage();
       tasks = tasks.filter(t => t.id !== id);
-      localStorage.setItem('my_tasks', JSON.stringify(tasks));
-
-      const li = taskList.querySelector(`[data-id="${id}"]`);
-      if (li) li.remove();
+      saveAndRender();
     }
 
-    function saveTaskToStorage(task) {
-      const tasks = getTasksFromStorage();
-      tasks.push(task);
-      localStorage.setItem('my_tasks', JSON.stringify(tasks));
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTasks();
     }
 
-    function getTasksFromStorage() {
-      return JSON.parse(localStorage.getItem('my_tasks')) || [];
+    function updateProgress() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+      progressBar.style.width = percent + '%';
+      progressLabel.innerText = `${completed} dari ${total} tugas selesai`;
+      progressPercent.innerText = percent + '%';
     }
 
-    function loadTasks() {
-      const tasks = getTasksFromStorage();
-      tasks.forEach(renderTask);
+    function saveAndRender() {
+      localStorage.setItem('pro_tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      const keyword = searchInput.value.toLowerCase();
+
+      let filteredTasks = tasks.filter(t => {
+        const matchesSearch = t.text.toLowerCase().includes(keyword);
+        if (currentFilter === 'active') return matchesSearch && !t.completed;
+        if (currentFilter === 'completed') return matchesSearch && t.completed;
+        return matchesSearch;
+      });
+
+      if (filteredTasks.length === 0) {
+        taskList.innerHTML = `<li class="empty-state">Tidak ada tugas yang ditemukan 📭</li>`;
+        updateProgress();
+        return;
+      }
+
+      filteredTasks.forEach(task => {
+        const li = document.createElement('li');
+        if (task.completed) li.classList.add('completed');
+
+        const priorityClass = task.priority === 'tinggi' ? 'priority-tinggi' : 'priority-normal';
+        const priorityLabel = task.priority === 'tinggi' ? 'Penting' : 'Normal';
+
+        li.innerHTML = `
+          <div class="task-left" onclick="toggleTask(${task.id})">
+            <input type="checkbox" ${task.completed ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${task.id})">
+            <div class="task-info">
+              <span class="task-text">${escapeHtml(task.text)}</span>
+              <span class="priority-badge ${priorityClass}">${priorityLabel}</span>
+            </div>
+          </div>
+          <button class="delete-btn" onclick="deleteTask(${task.id})" title="Hapus">🗑️</button>
+        `;
+        taskList.appendChild(li);
+      });
+
+      updateProgress();
     }
 
     function escapeHtml(text) {
@@ -187,7 +437,6 @@
       return div.innerHTML;
     }
 
-    // Tekan Enter untuk menambah tugas
     taskInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') addTask();
     });
